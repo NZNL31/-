@@ -1,0 +1,44 @@
+情况一：Legacy BIOS + MBR（老机器常见）
+
+用 Windows 安装盘 或 PE 启动。
+
+进入 修复计算机 → 命令提示符。
+
+输入：
+
+bootrec /fixmbr
+bootrec /fixboot
+bootrec /rebuildbcd
+
+
+如果 /fixboot 报“拒绝访问”，执行：
+
+bootsect /nt60 SYS /mbr
+
+
+重启 → 进入系统。
+
+🔵 情况二：UEFI + GPT（新机器常见）
+
+用 Windows 安装盘 或 PE 启动。
+
+进入 命令提示符。
+
+输入：
+
+diskpart
+list vol
+
+
+找到 EFI 分区（100~300MB，FAT32 格式），记下盘符，比如 S:。
+
+退出 diskpart，输入：
+
+bcdboot C:\Windows /l zh-cn /s S: /f UEFI
+
+
+C:\Windows = 系统盘路径
+
+S: = EFI 分区盘符
+
+重启 → 应该可以进入系统。
