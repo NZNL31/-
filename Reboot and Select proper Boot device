@@ -1,0 +1,46 @@
+你现在是 Windows 启动不了，卡在 “Reboot and Select proper Boot device” 这种提示，对吧？说明引导文件或引导扇区损坏了。可以用 Windows 安装盘 / PE 启动盘 进入命令行，尝试修复。
+
+下面是常见的命令行修复方法（在 命令提示符 中执行）：
+
+1. 修复 MBR（主引导记录）和启动扇区
+bootrec /fixmbr
+bootrec /fixboot
+bootrec /scanos
+bootrec /rebuildbcd
+
+
+/fixmbr：重写主引导记录。
+
+/fixboot：修复系统分区的启动扇区（有时会遇到“拒绝访问”，需要先用 bootsect）。
+
+/scanos：扫描已安装的 Windows 系统。
+
+/rebuildbcd：重建引导配置数据库。
+
+2. 如果 bootrec /fixboot 报“拒绝访问”
+
+先运行：
+
+bootsect /nt60 sys /mbr
+
+
+然后再试：
+
+bootrec /fixboot
+
+3. 检查并修复磁盘错误
+chkdsk C: /f /r
+
+
+（假设系统盘是 C:，如果不是，需要改盘符）
+
+4. 如果是 GPT + UEFI
+
+还需要重建 EFI 引导分区：
+
+bcdboot C:\Windows /l zh-cn /s S: /f UEFI
+
+
+C:\Windows → 系统目录
+
+S: → EFI 分区盘符（进入命令行后用 diskpart → list vol 可以看到）
